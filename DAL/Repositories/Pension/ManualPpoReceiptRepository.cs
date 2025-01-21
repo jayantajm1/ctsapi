@@ -119,19 +119,16 @@ namespace CTS_BE.DAL.Repositories.Pension
         public async Task<int> DeactivateUnusedPpoReceipts(short financialYear, string treasuryCode)
         {
             var unusedReceipts = await _context
-                .PpoReceipts.Where(entity =>
-                    entity.ActiveFlag
-                    && entity.FinancialYear == financialYear
-                    && entity.TreasuryCode == treasuryCode
+                .PpoReceipts.Where(r =>
+                    r.ActiveFlag
+                    && r.FinancialYear == financialYear
+                    && r.TreasuryCode == treasuryCode
                 )
-                .Include(entity => entity.Pensioners)
-                .Where(entity => entity.Pensioners.Count == 0)
+                .Include(r => r.Pensioners)
+                .Where(r => r.Pensioners.Count == 0)
                 .ToListAsync();
 
-            foreach (var receipt in unusedReceipts)
-            {
-                receipt.ActiveFlag = false;
-            }
+            unusedReceipts.ForEach(r => r.ActiveFlag = false);
 
             return await _context.SaveChangesAsync();
         }

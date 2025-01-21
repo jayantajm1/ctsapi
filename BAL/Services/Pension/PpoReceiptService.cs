@@ -255,6 +255,7 @@ namespace CTS_BE.BAL.Services.Pension
             string treasuryCode
         )
         {
+            DeactivationResponseDTO deactivationResponse = new();
             try
             {
                 int deactivatedCount =
@@ -262,15 +263,14 @@ namespace CTS_BE.BAL.Services.Pension
                         financialYear,
                         treasuryCode
                     );
-                return new DeactivationResponseDTO { DeactivatedCount = deactivatedCount };
+                deactivationResponse.DeactivatedCount = deactivatedCount;
             }
             catch (DbUpdateException ex)
             {
-                return new DeactivationResponseDTO
-                {
-                    ErrorMessage = ex.InnerException?.Message ?? ex.Message,
-                };
+                deactivationResponse.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
+                return deactivationResponse;
             }
+            return deactivationResponse;
         }
     }
 }

@@ -319,7 +319,7 @@ namespace CTS_BE.Controllers.Pension
             return response;
         }
 
-        [HttpPatch("receipts/unused/deactivate")]
+        [HttpGet("receipts/unused/deactivate")]
         [Tags("Pension: Manual PPO Receipt")]
         [OpenApi]
         public async Task<JsonAPIResponse<DeactivationResponseDTO>> DeactivateUnusedPpoReceipts()
@@ -327,31 +327,15 @@ namespace CTS_BE.Controllers.Pension
             JsonAPIResponse<DeactivationResponseDTO> response = new();
             try
             {
-                DeactivationResponseDTO deactivatedResponse =
-                    await _ppoReceiptService.DeactivateUnusedPpoReceipts(
+                response = new()
+                {
+                    ApiResponseStatus = Enum.APIResponseStatus.Success,
+                    Result = await _ppoReceiptService.DeactivateUnusedPpoReceipts(
                         GetCurrentFyYear(),
                         GetTreasuryCode()
-                    );
-
-                if (!string.IsNullOrEmpty(deactivatedResponse.ErrorMessage))
-                {
-                    response = new()
-                    {
-                        ApiResponseStatus = Enum.APIResponseStatus.Error,
-                        Result = deactivatedResponse,
-                        Message = deactivatedResponse.ErrorMessage,
-                    };
-                }
-                else
-                {
-                    response = new()
-                    {
-                        ApiResponseStatus = Enum.APIResponseStatus.Success,
-                        Result = deactivatedResponse,
-                        Message =
-                            $"{deactivatedResponse.DeactivatedCount} unused PPO receipts deactivated successfully!",
-                    };
-                }
+                    ),
+                    Message = $"Unused PPO receipts deactivated successfully!",
+                };
             }
             catch (Exception ex)
             {

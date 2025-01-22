@@ -265,10 +265,12 @@ namespace CTS_BE.BAL.Services.Pension
                     );
                 deactivationResponse.DeactivatedCount = deactivatedCount;
             }
-            catch (DbUpdateException ex)
+            catch (Exception ex)
             {
-                deactivationResponse.ErrorMessage = ex.InnerException?.Message ?? ex.Message;
-                return deactivationResponse;
+                deactivationResponse.FillDataSource(
+                    new object(),
+                    ex.InnerException?.Message ?? ex.Message
+                );
             }
             return deactivationResponse;
         }

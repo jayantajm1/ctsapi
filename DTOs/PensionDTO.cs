@@ -1313,6 +1313,5 @@ namespace CTS_BE.DTOs
     public class DeactivationResponseDTO : BaseDTO
     {
         public int DeactivatedCount { get; set; }
-        public string? ErrorMessage { get; set; }
     }
 }
